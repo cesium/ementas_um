@@ -195,8 +195,9 @@ public class MainMenuSwing extends javax.swing.JFrame {
         
         ArrayList<Meal> lmeal = null;
         try {
-            lmeal = (ArrayList<Meal>) parser.getParsedMeals();
-            calendars.commitListMeal(lmeal, this, type.getSelectedIndex());
+            int t = type.getSelectedIndex();
+            lmeal = (ArrayList<Meal>) parser.getParsedMeals(t);
+            calendars.commitListMeal(lmeal, this, t);
             this.addMessage("Ementa adicionada com sucesso");
             
         } catch (IOException ex) {
@@ -232,14 +233,12 @@ public class MainMenuSwing extends javax.swing.JFrame {
             String almocoVegetariano = prop.getProperty("almocoVegetariano");
             String jantarVegetariano = prop.getProperty("jantarVegetariano");
             String almocoRampaB = prop.getProperty("almocoRampaB");
-            String jantarRampaB = prop.getProperty("jantarRampaB");
             
             if( (almocoRampaA == null)
                 || (jantarRampaA == null)
                 || (almocoVegetariano == null)
                 || (jantarVegetariano == null)
-                || (almocoRampaB == null)
-                || (jantarRampaB == null) ){
+                || (almocoRampaB == null) ){
                 JOptionPane.showMessageDialog(null, "Erros no ficheiro de configuração");
                 System.exit(0);
             }
@@ -251,8 +250,7 @@ public class MainMenuSwing extends javax.swing.JFrame {
                                         prop.getProperty("jantarRampaA"),
                                         prop.getProperty("almocoVegetariano"),
                                         prop.getProperty("jantarVegetariano"),
-                                        prop.getProperty("almocoRampaB"),
-                                        prop.getProperty("jantarRampaB"));
+                                        prop.getProperty("almocoRampaB"));
         } catch (FileNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "Ficheiro de configuração não foi encontrado");
             System.exit(0);

@@ -31,7 +31,7 @@ public class CCalendar {
 	private final String REDIRECT_URL = "urn:ietf:wg:oauth:2.0:oob";
         
 	private final String SCOPE ="https://www.googleapis.com/auth/calendar";
-	private final String APP_NAME="MealCalendar";
+	private final String APP_NAME="EmentasUM";
 	
         //Calendar URLs
 	private String almocoRampaA;
@@ -41,14 +41,13 @@ public class CCalendar {
         private String jantarVegetariano;
         
         private String almocoRampaB;
-        private String jantarRampaB;
         
 	private Calendar service ;
 	
 	private String authorizationUrl;
 	private String code;
 	
-	public CCalendar(String id, String secret, String ara, String jra, String av, String jv, String arb, String jrb){
+	public CCalendar(String id, String secret, String ara, String jra, String av, String jv, String arb){
             //Removes whitespaces just in case
             CLIENT_ID = id.replaceAll("\\s","");
             CLIENT_SECRET = secret.replaceAll("\\s","");
@@ -60,7 +59,6 @@ public class CCalendar {
             jantarVegetariano = jv.replaceAll("\\s","");
             
             almocoRampaB = arb.replaceAll("\\s","");
-            jantarRampaB = jrb.replaceAll("\\s","");
         }
 	
 	/**
@@ -146,23 +144,22 @@ public class CCalendar {
 			DateTime end = DateTime.parseRfc3339(m.getYear()+ "-" + m.getMonth()+ "-" +m.getDay()+ m.getMealEndTime()+"Z");
 			event.setStart(new EventDateTime().setDateTime(start).setTimeZone("Europe/Lisbon"));
 			event.setEnd(new EventDateTime().setDateTime(end).setTimeZone("Europe/Lisbon"));
-			event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;UNTIL=20110701T170000Z"));
-
-			Event recurringEvent = null;
+                        
+			Event createdEvent = null;
                         
                         //Considers the meal (lunch/dinner) and the type of menu.
 			if(m.is_lunch()){
                             switch(type){
                                 case 0:
-                                    recurringEvent = service.events().insert(this.almocoRampaA, event).execute();
+                                    createdEvent = service.events().insert(this.almocoRampaA, event).execute();
                                     frame.addMessage("Almoço Normal adicionado: dia " +m.getDay() );
                                     break;
                                 case 1:
-                                    recurringEvent = service.events().insert(this.almocoVegetariano, event).execute();
+                                    createdEvent = service.events().insert(this.almocoVegetariano, event).execute();
                                     frame.addMessage("Almoço Vegetariano adicionado: dia " +m.getDay() );
                                     break;
                                 case 2:
-                                    recurringEvent = service.events().insert(this.almocoRampaB, event).execute();
+                                    createdEvent = service.events().insert(this.almocoRampaB, event).execute();
                                     frame.addMessage("Almoço Rampa B adicionado: dia " +m.getDay() );
                                     break;
                             } 
@@ -170,16 +167,12 @@ public class CCalendar {
                         else{
                             switch(type){
                                 case 0:
-                                    recurringEvent = service.events().insert(this.jantarRampaA, event).execute();
+                                    createdEvent = service.events().insert(this.jantarRampaA, event).execute();
                                     frame.addMessage("Jantar Normal adicionado: dia " +m.getDay() );
                                     break;
                                 case 1:
-                                    recurringEvent = service.events().insert(this.jantarVegetariano, event).execute();
+                                    createdEvent = service.events().insert(this.jantarVegetariano, event).execute();
                                     frame.addMessage("Jantar Vegetariano adicionado: dia " +m.getDay() );
-                                    break;
-                                case 2:
-                                    recurringEvent = service.events().insert(this.jantarRampaB, event).execute();
-                                    frame.addMessage("Jantar Rampa B adicionado: dia " +m.getDay() );
                                     break;
                             }
                         }

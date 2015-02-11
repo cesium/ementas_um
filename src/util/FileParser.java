@@ -27,31 +27,34 @@ public class FileParser{
   }
   
   
-  public void parseFile () throws IOException,ArrayIndexOutOfBoundsException {
+  public void parseFile (int type) throws IOException,ArrayIndexOutOfBoundsException {
    String lineText = null;
-   int line = 0;
    String day = "-1";
    String[] tokens;
 
    BufferedReader br = new BufferedReader( new InputStreamReader( new FileInputStream(path), "windows-1252") );
 
     while( ( lineText = br.readLine() ) != null && lineText.length() > 0 ){
-        tokens = lineText.split("A:|J:");
-        if(tokens.length < 3)
+        tokens = lineText.split("A:|/J:");
+        if( (type==2 && tokens.length < 2) ||  (type != 2 && tokens.length < 3) ){
             throw new ArrayIndexOutOfBoundsException();
+        }
+        
         NumberFormat fmt = new DecimalFormat("00");
         day = fmt.format(Integer.parseInt(tokens[0]) );
-        //removing the last character ( '/' )
-        String lunch = tokens[1].substring(0, tokens[1].length() - 1);
-        this.lmeal.add(new Meal(lunch, true, year, month, day));
         
-        this.lmeal.add( new Meal( tokens[2], false, year, month, day));
+        
+        this.lmeal.add(new Meal( tokens[1], true, year, month, day));
+        
+        if(type != 2){
+            this.lmeal.add( new Meal( tokens[2], false, year, month, day));
+        }
     }
   }
   
   //get the meals, parsed for the events
-  public List<Meal> getParsedMeals() throws IOException, ArrayIndexOutOfBoundsException{
-    parseFile();
+  public List<Meal> getParsedMeals(int type) throws IOException, ArrayIndexOutOfBoundsException{
+    parseFile(type);
     return lmeal;
   }
 
